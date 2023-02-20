@@ -4,8 +4,8 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[GameGenres](
 	[GameGenreID] [int] IDENTITY(1,1) NOT NULL,
-	[GenreID] [int] NULL,
-	[GameID] [int] NULL,
+	[GenreID] [int] NOT NULL,
+	[GameID] [int] NOT NULL,
  CONSTRAINT [PK_GameGenre] PRIMARY KEY CLUSTERED 
 (
 	[GameGenreID] ASC

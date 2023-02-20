@@ -4,7 +4,7 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 CREATE TABLE [dbo].[Genres](
 	[GenreID] [int] IDENTITY(1,1) NOT NULL,
-	[Name] [varchar](25) NULL,
+	[Name] [varchar](25) NOT NULL,
  CONSTRAINT [PK_Genre] PRIMARY KEY CLUSTERED 
 (
 	[GenreID] ASC
