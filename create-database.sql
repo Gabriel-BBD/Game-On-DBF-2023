@@ -218,13 +218,14 @@ GO
 
 /* UDF FOR COMPOSITE KEY*/
 GO
-CREATE FUNCTION CheckInviter (
-    @field INT
+
+CREATE FUNCTION CheckInvite (
+    @inviter INT, @invitee INT
 )
 RETURNS INTEGER
 AS
 BEGIN
-    IF EXISTS (SELECT* FROM Friends WHERE InviterID = @field)
+    IF EXISTS (SELECT * FROM Friends WHERE InviterID = @invitee AND InviteeID = @inviter)
 	BEGIN
         return 0
 	END
@@ -234,5 +235,5 @@ GO
 /*COMPOSITE KEY CONSTRAINT */
 ALTER TABLE Friends
 ADD CONSTRAINT CHK_Friends CHECK (
-dbo.CheckInviter(Friends.InviteeID) > 0)
+dbo.CheckInvite(Friends.InviterID, Friends.InviteeID) > 0)
 GO
