@@ -4,7 +4,7 @@ GO
 CREATE DATABASE dbGameOn;
 GO
 
-
+/* CREATE TABLES */
 USE dbGameOn;
 CREATE TABLE [dbo].[Games](
     [GameID] [int] IDENTITY(1,1) NOT NULL,
@@ -20,6 +20,7 @@ ALTER TABLE dbo.Games
 ADD CONSTRAINT [PK_Games] PRIMARY KEY CLUSTERED ([GameID] ASC);
 GO
 
+/* CREATE GENRE TABLE */
 USE dbGameOn;
 CREATE TABLE [dbo].[Genres](
     [GenreID] [int] IDENTITY(1,1) NOT NULL,
@@ -72,6 +73,8 @@ CREATE TABLE [dbo].[Ratings](
 );
 GO
 
+
+
 USE dbGameOn;
 ALTER TABLE dbo.Ratings
 ADD CONSTRAINT [PK_Rating] PRIMARY KEY CLUSTERED ([RatingID] ASC);
@@ -106,7 +109,7 @@ CREATE TABLE [dbo].[Gamers](
     [GamerID] [int] IDENTITY(1,1) NOT NULL,
 	[GamerTypeID] [int] NOT NULL,
 	[HandlerName] [varchar](30)NOT NULL,
-	[HandlerEmail] [varchar](50)NOT NULL,
+	[Email] [varchar](50)NOT NULL,
 	[BirthYear] [int] NOT NULL,
     [Country] [varchar](50) NOT NULL,
     [Admin] [bit] NOT NULL,
@@ -121,18 +124,19 @@ GO
 
 USE dbGameOn;
  CREATE TABLE [dbo].[Friends](
-    [FriendsID] [int] IDENTITY(1,1) NOT NULL,
-	[InviterID] [int] NULL,
-	[InviteeID] [int] NULL,
+	[InviterID] [int] NOT NULL,
+	[InviteeID] [int] NOT NULL,
 	[TimeStamp] [smalldatetime] NULL
 );
 GO
 
 USE dbGameOn;
 ALTER TABLE dbo.Friends
-ADD CONSTRAINT [PK_Friends] PRIMARY KEY CLUSTERED ([FriendsID] ASC);
+ADD CONSTRAINT [PK_Friends] PRIMARY KEY (InviterID, InviteeID);
 GO
 
+
+/*FOREIGN KEYS*/
 USE dbGameOn;
 ALTER TABLE GameGenres
     ADD CONSTRAINT fk_Genres_GameGenres_GenreID FOREIGN KEY(GenreID)
@@ -172,11 +176,25 @@ ALTER TABLE Ratings
 GO
 
 USE dbGameOn;
+ALTER TABLE Gamers
+    ADD CONSTRAINT fk_GamerTypes_Gamers_GamerTypeID FOREIGN KEY(GamerTypeID)
+    REFERENCES GamerTypes(TypeID)
+GO
+
+USE dbGameOn;
+ALTER TABLE Friends
+    ADD CONSTRAINT fk_Gamers_Friends_GamerID FOREIGN KEY(InviterID)
+    REFERENCES Gamers(GamerID)
+GO
+
+USE dbGameOn;
 ALTER TABLE Friends
     ADD CONSTRAINT fk_Friends_Gamer_GamerID FOREIGN KEY(InviterID)
     REFERENCES Gamers(GamerID)
 GO
 
+
+/*CONSTRAINTS */
 USE dbGameOn;
 ALTER TABLE Gamers
  ADD CONSTRAINT CHK_Year CHECK (BirthYear BETWEEN 1900 AND CAST(Year(GETDATE()) AS int) - 5)
@@ -194,5 +212,27 @@ ALTER TABLE Games
 ADD CONSTRAINT CHK_ReleaseDate CHECK (ReleaseDate <= GETDATE())
 
 ALTER TABLE Games
-ADD CONSTRAINT CHK_Price CHECK (Price > 0)
+ADD CONSTRAINT CHK_Price CHECK (Price >= 0)
+
+GO
+
+/* UDF FOR COMPOSITE KEY*/
+GO
+CREATE FUNCTION CheckInviter (
+    @field INT
+)
+RETURNS INTEGER
+AS
+BEGIN
+    IF EXISTS (SELECT* FROM Friends WHERE InviterID = @field)
+	BEGIN
+        return 0
+	END
+    return 1
+END
+GO
+/*COMPOSITE KEY CONSTRAINT */
+ALTER TABLE Friends
+ADD CONSTRAINT CHK_Friends CHECK (
+dbo.CheckInviter(Friends.InviteeID) > 0)
 GO
