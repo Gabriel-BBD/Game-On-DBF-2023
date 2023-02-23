@@ -25,7 +25,6 @@ From Ratings
 Where GamerID = @Gamer
 AND
 CompletionRate = 100
-Group by GamerID
 RETURN @sumComplete
 END
 GO
@@ -39,7 +38,6 @@ Declare @sumPlayed int
 Select @sumPlayed = count(RatingID)
 From Ratings
 Where GamerID = @Gamer
-Group by GamerID
 RETURN @sumPlayed
 END
 GO
@@ -53,7 +51,6 @@ Declare @sumHour int
 Select @sumHour = SUM(PlayHours)
 From Ratings
 Where GamerID = @Gamer
-Group by GamerID
 RETURN @sumHour
 END
 GO
@@ -67,7 +64,6 @@ Declare @aveRate int
 Select @aveRate = AVG(CompletionRate)
 From Ratings
 Where GamerID = @Gamer
-Group by GamerID
 RETURN @aveRate
 END
 GO
@@ -78,10 +74,11 @@ RETURNS int
 AS
 BEGIN
 Declare @totalFriends int
-Select @totalFriends = COUNT(InviteeID) + count(InviterID)
+Select @totalFriends = COUNT(TimeStamp)
 From Friends
 Where InviterID = @Gamer
-Group by InviterID
+or
+InviteeID = @Gamer
 RETURN @totalFriends
 END
 GO
