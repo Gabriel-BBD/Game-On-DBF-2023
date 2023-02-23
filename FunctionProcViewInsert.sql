@@ -78,7 +78,7 @@ RETURNS int
 AS
 BEGIN
 Declare @totalFriends int
-Select @totalFriends = COUNT(InviteeID)
+Select @totalFriends = COUNT(InviteeID) + count(InviterID)
 From Friends
 Where InviterID = @Gamer
 Group by InviterID
