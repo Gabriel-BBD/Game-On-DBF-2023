@@ -20,7 +20,7 @@ RETURNS int
 AS
 BEGIN
 Declare @sumComplete int
-Select @sumComplete = sum(RatingID)
+Select @sumComplete = count(RatingID)
 From Ratings
 Where GamerID = @Gamer
 AND
@@ -30,9 +30,65 @@ RETURN @sumComplete
 END
 GO
 
---CasualGamers view
+--getTotalPlayed Function
+CREATE FUNCTION getTotalPlayed(@Gamer as int)
+RETURNS int
+AS
+BEGIN
+Declare @sumPlayed int
+Select @sumPlayed = count(RatingID)
+From Ratings
+Where GamerID = @Gamer
+Group by GamerID
+RETURN @sumPlayed
+END
+GO
+
+--getTotalHours Function
+CREATE FUNCTION getTotalHours(@Gamer as int)
+RETURNS int
+AS
+BEGIN
+Declare @sumHour int
+Select @sumHour = SUM(PlayHours)
+From Ratings
+Where GamerID = @Gamer
+Group by GamerID
+RETURN @sumHour
+END
+GO
+
+--getAveRate Function
+CREATE FUNCTION getAveRate(@Gamer as int)
+RETURNS int
+AS
+BEGIN
+Declare @aveRate int
+Select @aveRate = AVG(CompletionRate)
+From Ratings
+Where GamerID = @Gamer
+Group by GamerID
+RETURN @aveRate
+END
+GO
+
+--getTotalFriends Function
+CREATE FUNCTION getTotalFriends(@Gamer as int)
+RETURNS int
+AS
+BEGIN
+Declare @totalFriends int
+Select @totalFriends = COUNT(InviteeID)
+From Friends
+Where InviterID = @Gamer
+Group by InviterID
+RETURN @totalFriends
+END
+GO
+
+--GamerStats view
 CREATE VIEW [GamerStats] AS
-SELECT HandlerName as 'Gamer', COUNT(Ratings.RatingID) as 'Games Payed', [dbo].[getTotalCompleted](Gamers.GamerID) as 'Games Completed', SUM(Ratings.PlayHours) as 'Total Hours', AVG(Ratings.CompletionRate) as 'Average Completion', COUNT(Friends.InviteeID) as 'Friends'
+SELECT HandlerName as 'Gamer', COALESCE([dbo].[getTotalPlayed](Gamers.GamerID), 0) as 'Games Payed', COALESCE([dbo].[getTotalCompleted](Gamers.GamerID), 0) as 'Games Completed', COALESCE([dbo].[getTotalHours](Gamers.GamerID), 0) as 'Total Hours', COALESCE([dbo].[getAveRate](Gamers.GamerID), 0) as 'Average Completion', COALESCE([dbo].[getTotalFriends](Gamers.GamerID), 0) as 'Friends'
 FROM Gamers
 Left Join Ratings
 on Ratings.GamerID = Gamers.GamerID
