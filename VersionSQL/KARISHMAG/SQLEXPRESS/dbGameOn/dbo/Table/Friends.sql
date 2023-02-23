@@ -19,5 +19,5 @@ ALTER TABLE [dbo].[Friends] CHECK CONSTRAINT [fk_Friends_Gamer_GamerID]
 ALTER TABLE [dbo].[Friends]  WITH CHECK ADD  CONSTRAINT [fk_Gamers_Friends_GamerID] FOREIGN KEY([InviterID])
 REFERENCES [dbo].[Gamers] ([GamerID])
 ALTER TABLE [dbo].[Friends] CHECK CONSTRAINT [fk_Gamers_Friends_GamerID]
-ALTER TABLE [dbo].[Friends]  WITH CHECK ADD  CONSTRAINT [CHK_Friends] CHECK  (([dbo].[CheckInviter]([Friends].[InviteeID])>(0)))
+ALTER TABLE [dbo].[Friends]  WITH CHECK ADD  CONSTRAINT [CHK_Friends] CHECK  (([dbo].[CheckInvite]([Friends].[InviterID],[Friends].[InviteeID])>(0)))
 ALTER TABLE [dbo].[Friends] CHECK CONSTRAINT [CHK_Friends]
