@@ -17,7 +17,7 @@ CREATE TABLE [dbo].[Games](
 ALTER TABLE [dbo].[Games]  WITH CHECK ADD  CONSTRAINT [fk_Game_PrimDev_CompanyID] FOREIGN KEY([DeveloperID])
 REFERENCES [dbo].[PrimaryDevelopers] ([DeveloperID])
 ALTER TABLE [dbo].[Games] CHECK CONSTRAINT [fk_Game_PrimDev_CompanyID]
-ALTER TABLE [dbo].[Games]  WITH CHECK ADD  CONSTRAINT [CHK_Price] CHECK  (([Price]>(0)))
+ALTER TABLE [dbo].[Games]  WITH CHECK ADD  CONSTRAINT [CHK_Price] CHECK  (([Price]>=(0)))
 ALTER TABLE [dbo].[Games] CHECK CONSTRAINT [CHK_Price]
 ALTER TABLE [dbo].[Games]  WITH CHECK ADD  CONSTRAINT [CHK_ReleaseDate] CHECK  (([ReleaseDate]<=getdate()))
 ALTER TABLE [dbo].[Games] CHECK CONSTRAINT [CHK_ReleaseDate]
