@@ -4,4 +4,4 @@ Databse Fundamentals Level Up for the BBD Grad Program - Game On Syndicate
 Gabriel Tidy\
 Julia Mortemore\
 Karishma George\
-Lesedi Matsabu\
+Lesedi Matsabu
